@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    
     <v-app-bar
       app
       color="primary"
@@ -15,7 +16,9 @@
           width="40"
         />
 
-        <h1>
+        <h1
+          style='font-family: "Ubuntu"'
+        >
           Training manager
         </h1>
       </div>
