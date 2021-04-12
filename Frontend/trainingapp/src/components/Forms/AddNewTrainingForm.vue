@@ -24,6 +24,43 @@
             ></v-text-field>
           </v-col>
         </v-row>
+        <v-container
+          v-for="exercise in exercises"
+          v-bind:key="exercise.name"
+          style="margin: auto"
+        >
+          <h1 >{{exercise.name}}</h1>
+          <v-row>
+              <v-col>
+                <th>
+                  reps
+                </th>
+              </v-col>
+              <v-col>
+                <th>
+                  weight(kg)
+                </th>
+              </v-col>
+            </v-row>
+
+          <v-container
+            v-for="set in exercise.sets"
+            v-bind:key="set.reps"
+          >
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model="set.reps"
+                ></v-text-field>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="set.weight"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-container>
         <v-row>
           <v-col
             md="4"
@@ -74,7 +111,32 @@
           date: null,
           startTime: null,
           endTime: null,
-          exercises: Array,
+          exercises: [{
+            name: 'Deadlift',
+            sets: [
+              {
+                weight: 21,
+                reps: 100,
+              },
+              {
+                weight: 100,
+                reps: 12,
+              }
+            ]
+            },
+            {
+            name: 'Bench press',
+            sets: [
+              {
+                weight: 21,
+                reps: 100,
+              },
+              {
+                weight: 100,
+                reps: 12,
+              }
+            ]
+            },],
         }),
         props: {
             activeForm: Boolean,
