@@ -39,10 +39,19 @@
             {{ $refs.calendar.title }}
           </v-toolbar-title>
           <v-spacer></v-spacer>
+          <v-btn
+            outlined
+            class="mr-4"
+            color="grey darken-2"
+            @click="updateAddNewTrainingFormActive(true)"
+          >
+            Start New Training
+          </v-btn>
           <v-menu
             bottom
             right
           >
+          
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 outlined
@@ -125,12 +134,17 @@
           </v-card>
         </v-menu>
       </v-sheet>
+      <AddNewTrainingForm 
+        :activeForm="addNewTrainingFormActive" 
+        @updateActiveForm="updateAddNewTrainingFormActive"
+      />
     </v-col>
   </v-row>
 </template>
 
 <script>
 import {getEventsByDate} from "@/services/defaultService.js"
+import AddNewTrainingForm from "@/components/Forms/AddNewTrainingForm.vue"
 
   export default {
     data: () => ({
@@ -141,15 +155,22 @@ import {getEventsByDate} from "@/services/defaultService.js"
         week: 'Week',
         day: 'Day',
       },
+      addNewTrainingFormActive: true,
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
       events: [],
     }),
+    components: {
+        AddNewTrainingForm,
+    },
     mounted () {
       this.$refs.calendar.checkChange()
     },
     methods: {
+      updateAddNewTrainingFormActive(newValue) {
+        this.addNewTrainingFormActive = newValue
+      },
       viewDay ({ date }) {
         this.focus = date
         this.type = 'day'
@@ -185,6 +206,7 @@ import {getEventsByDate} from "@/services/defaultService.js"
         nativeEvent.stopPropagation()
       },
       async updateRange ({ start, end }) {
+        this.events = []
         var dataFromServer = await getEventsByDate(start.date, end.date)
         const events = []
         dataFromServer.forEach(element => {
