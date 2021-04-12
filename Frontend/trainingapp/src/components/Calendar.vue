@@ -155,7 +155,7 @@ import AddNewTrainingForm from "@/components/Forms/AddNewTrainingForm.vue"
         week: 'Week',
         day: 'Day',
       },
-      addNewTrainingFormActive: true,
+      addNewTrainingFormActive: false,
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,

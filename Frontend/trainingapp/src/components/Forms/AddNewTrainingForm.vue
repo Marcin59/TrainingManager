@@ -4,16 +4,52 @@
       v-model="active"
       width="80%"
     >
-      <v-card>
+      <v-card
+      >
         <v-card-title class="headline grey lighten-2">
           <center style="margin: auto">
             New training
           </center>
         </v-card-title>
 
-        <v-card-text>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </v-card-text>
+      <v-container>
+        <v-row>
+          <v-col
+            md="12"
+          >
+            <v-text-field
+              v-model="title"
+              label="Title"
+              required
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col
+            md="4"
+          >
+            <v-date-picker
+              v-model="date"
+            ></v-date-picker>
+          </v-col>
+          <v-col
+            md="4"
+          >
+            <h1>Start</h1>
+            <v-time-picker
+              v-model="startTime"
+            ></v-time-picker>
+          </v-col>
+          <v-col
+            md="4"
+          >
+            <h1>End</h1>
+            <v-time-picker
+              v-model="endTime"
+            ></v-time-picker>
+          </v-col>
+        </v-row>
+      </v-container>
 
         <v-divider></v-divider>
 
@@ -25,7 +61,6 @@
           >
             Cancel
           </v-btn>
-          <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -35,7 +70,11 @@
 <script>
     export default {
         data: () => ({
-
+          title: '',
+          date: null,
+          startTime: null,
+          endTime: null,
+          exercises: Array,
         }),
         props: {
             activeForm: Boolean,
