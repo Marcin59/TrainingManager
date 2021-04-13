@@ -4,8 +4,7 @@
       v-model="active"
       width="80%"
     >
-      <v-card
-      >
+      <v-card>
         <v-card-title class="headline grey lighten-2">
           <center style="margin: auto">
             New training
@@ -13,53 +12,100 @@
         </v-card-title>
 
       <v-container>
+        <v-container
+          v-for="(exercise, index) in newTraining"
+          v-bind:key="exercise.id"
+        >
         <v-row>
           <v-col
-            md="12"
+            md="3"
           >
-            <v-text-field
-              v-model="title"
-              label="Title"
-              required
-            ></v-text-field>
+            <h1 style="margin:0">{{exercise.name}}</h1>
+          </v-col>
+          <v-col>
+            <v-btn
+              outlined
+              class="mr-4"
+              color="grey darken-2"
+              @click="addNewSet(exercise.sets)"
+            >
+              Add new set
+            </v-btn>
+            <v-btn
+                  @click="deleteExerciseByIndex(newTraining ,index)"
+                >
+                  <v-icon 
+                    color='red'
+                    medium
+                  >
+                    mdi-delete
+                  </v-icon>
+                </v-btn>
           </v-col>
         </v-row>
-        <v-container
-          v-for="exercise in exercises"
-          v-bind:key="exercise.name"
-          style="margin: auto"
-        >
-          <h1 >{{exercise.name}}</h1>
           <v-row>
-              <v-col>
+              <v-col
+                md='5'
+              >
                 <th>
                   reps
                 </th>
               </v-col>
-              <v-col>
+              <v-col
+                md='5'
+              >
                 <th>
-                  weight(kg)
+                  weight
                 </th>
               </v-col>
             </v-row>
 
           <v-container
-            v-for="set in exercise.sets"
-            v-bind:key="set.reps"
+            v-for="(set, index) in exercise.sets"
+            v-bind:key="set.id"
           >
             <v-row>
-              <v-col>
+              <v-col
+                md='5'
+              >
                 <v-text-field
                   v-model="set.reps"
                 ></v-text-field>
               </v-col>
-              <v-col>
+              <v-col
+                md='5'
+              >
                 <v-text-field
+                  suffix="kg"
                   v-model="set.weight"
                 ></v-text-field>
               </v-col>
+              <v-col
+                md='2'
+              >
+                <v-btn
+                  @click="deleteSetByIndex(exercise.sets ,index)"
+                >
+                  <v-icon 
+                    color='red'
+                    medium
+                  >
+                    mdi-delete
+                  </v-icon>
+                </v-btn>
+              </v-col>
             </v-row>
           </v-container>
+        </v-container>
+        <v-container style="height: 100px">
+          <v-btn
+            outlined
+            class="mr-4"
+            color="grey darken-2"
+            @click="addNewExercise"
+          >
+            Add new exercise
+          </v-btn>
         </v-container>
         <v-row>
           <v-col
@@ -87,9 +133,6 @@
           </v-col>
         </v-row>
       </v-container>
-
-        <v-divider></v-divider>
-
         <v-card-actions>
           <v-btn
             color="primary"
@@ -107,36 +150,10 @@
 <script>
     export default {
         data: () => ({
-          title: '',
           date: null,
           startTime: null,
           endTime: null,
-          exercises: [{
-            name: 'Deadlift',
-            sets: [
-              {
-                weight: 21,
-                reps: 100,
-              },
-              {
-                weight: 100,
-                reps: 12,
-              }
-            ]
-            },
-            {
-            name: 'Bench press',
-            sets: [
-              {
-                weight: 21,
-                reps: 100,
-              },
-              {
-                weight: 100,
-                reps: 12,
-              }
-            ]
-            },],
+          newTraining: [],
         }),
         props: {
             activeForm: Boolean,
@@ -150,7 +167,42 @@
         methods: {
             closeForm() {
                 this.$emit('updateActiveForm', false)
-            }
+            },
+            addNewSet(sets) {
+              var newId
+              if(sets.length != 0){
+                newId  = sets[sets.length-1].id+1
+              }
+              else{
+                newId = 0
+              }
+              sets.push({
+                id: newId,
+                weight: 0,
+                reps: 0,
+              })
+            },
+            deleteSetByIndex(sets, index) {
+              sets.splice(index, 1)
+            },
+            addNewExercise() {
+              var newId
+              if(this.newTraining.length != 0){
+                newId  = this.newTraining[this.newTraining.length-1].id+1
+              }
+              else{
+                newId = 0
+              }
+              this.newTraining.push({
+                id: newId,
+                name: 'Push',
+                sets: [],
+            })
+            },
+            deleteExerciseByIndex(sets, index) {
+              sets.splice(index, 1)
+            },
         }
     }
 </script>
+
