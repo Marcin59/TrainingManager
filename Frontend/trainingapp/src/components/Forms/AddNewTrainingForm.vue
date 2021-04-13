@@ -4,7 +4,9 @@
       v-model="active"
       width="80%"
     >
-      <v-card>
+      <v-card
+        min-height=850
+      >
         <v-card-title class="headline grey lighten-2">
           <center style="margin: auto">
             New training
@@ -19,10 +21,17 @@
         <v-row>
           <v-col
             md="3"
+            style="padding:0; padding-right:10px"
           >
-            <h1 style="margin:0">{{exercise.name}}</h1>
+            <v-select
+              :items="exercisesTypes"
+              v-model="exercise.name"
+              solo
+            ></v-select>
           </v-col>
-          <v-col>
+          <v-col
+            style="padding:0"
+          >
             <v-btn
               outlined
               class="mr-4"
@@ -43,22 +52,26 @@
                 </v-btn>
           </v-col>
         </v-row>
-          <v-row>
-              <v-col
-                md='5'
-              >
-                <th>
-                  reps
-                </th>
-              </v-col>
-              <v-col
-                md='5'
-              >
-                <th>
-                  weight
-                </th>
-              </v-col>
-            </v-row>
+        <v-row
+          v-if="exercise.sets.length != 0"
+        >
+            <v-col
+              md='5'
+              style="padding:0"
+            >
+              <th>
+                reps
+              </th>
+            </v-col>
+            <v-col
+              md='5'
+              style="padding:0"
+            >
+              <th>
+                weight
+              </th>
+            </v-col>
+          </v-row>
 
           <v-container
             v-for="(set, index) in exercise.sets"
@@ -67,12 +80,14 @@
             <v-row>
               <v-col
                 md='5'
+                style="padding:0; padding-right:10px"
               >
                 <v-text-field
                   v-model="set.reps"
                 ></v-text-field>
               </v-col>
               <v-col
+                style="padding:0"
                 md='5'
               >
                 <v-text-field
@@ -109,26 +124,19 @@
         </v-container>
         <v-row>
           <v-col
-            md="4"
+            md="6"
+            align='center'
           >
             <v-date-picker
-              v-model="date"
+              v-model="startDate"
             ></v-date-picker>
           </v-col>
           <v-col
-            md="4"
+            md="6"
+            align='center'
           >
-            <h1>Start</h1>
             <v-time-picker
               v-model="startTime"
-            ></v-time-picker>
-          </v-col>
-          <v-col
-            md="4"
-          >
-            <h1>End</h1>
-            <v-time-picker
-              v-model="endTime"
             ></v-time-picker>
           </v-col>
         </v-row>
@@ -150,10 +158,10 @@
 <script>
     export default {
         data: () => ({
-          date: null,
+          startDate: null,
           startTime: null,
-          endTime: null,
           newTraining: [],
+          exercisesTypes: ['Deadlift', 'Bench press', 'Squat'],
         }),
         props: {
             activeForm: Boolean,
@@ -163,6 +171,12 @@
                 get () { return this.activeForm },
                 set (value) { this.$emit('updateActiveForm', value) },    
             }
+        },
+        mounted() {
+          var actualDate = new Date().toJSON().slice(0,10)
+          var actualTime = new Date().toJSON().slice(11,16)
+          this.startDate = actualDate
+          this.startTime = actualTime 
         },
         methods: {
             closeForm() {
@@ -195,7 +209,7 @@
               }
               this.newTraining.push({
                 id: newId,
-                name: 'Push',
+                name: null,
                 sets: [],
             })
             },
