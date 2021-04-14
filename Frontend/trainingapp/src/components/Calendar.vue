@@ -137,13 +137,14 @@
       <AddNewTrainingForm 
         :activeForm="addNewTrainingFormActive" 
         @updateActiveForm="updateAddNewTrainingFormActive"
+        @updateEvents="updateEvents"
       />
     </v-col>
   </v-row>
 </template>
 
 <script>
-import {getEventsByDate} from "@/services/defaultService.js"
+import {getTrainingsByDate} from "@/services/defaultService.js"
 import AddNewTrainingForm from "@/components/Forms/AddNewTrainingForm.vue"
 
   export default {
@@ -205,9 +206,13 @@ import AddNewTrainingForm from "@/components/Forms/AddNewTrainingForm.vue"
 
         nativeEvent.stopPropagation()
       },
+      async updateEvents() {
+        await this.prev()
+        this.next()
+      },
       async updateRange ({ start, end }) {
         this.events = []
-        var dataFromServer = await getEventsByDate(start.date, end.date)
+        var dataFromServer = await getTrainingsByDate(start.date, end.date)
         const events = []
         dataFromServer.forEach(element => {
             events.push({

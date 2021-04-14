@@ -14,8 +14,12 @@
         </v-card-title>
 
       <v-container>
+        <v-text-field
+          v-model="trainingTitle"
+          label="Title"
+        ></v-text-field>
         <v-container
-          v-for="(exercise, index) in newTraining"
+          v-for="(exercise, index) in exercises"
           v-bind:key="exercise.id"
         >
         <v-row>
@@ -25,7 +29,7 @@
           >
             <v-select
               :items="exercisesTypes"
-              v-model="exercise.name"
+              v-model="exercise.title"
               solo
             ></v-select>
           </v-col>
@@ -41,7 +45,7 @@
               Add new set
             </v-btn>
             <v-btn
-                  @click="deleteExerciseByIndex(newTraining ,index)"
+                  @click="deleteExerciseByIndex(exercises ,index)"
                 >
                   <v-icon 
                     color='red'
@@ -149,6 +153,14 @@
           >
             Cancel
           </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="acceptForm"
+          >
+            Accept
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -156,12 +168,16 @@
 </template>
 
 <script>
+
+import {getExerciseTitles, postNewTraining} from "@/services/defaultService.js"
+
     export default {
         data: () => ({
           startDate: null,
           startTime: null,
-          newTraining: [],
-          exercisesTypes: ['Deadlift', 'Bench press', 'Squat'],
+          exercises: [],
+          exercisesTypes: [],
+          trainingTitle: null,
         }),
         props: {
             activeForm: Boolean,
@@ -173,12 +189,39 @@
             }
         },
         mounted() {
-          var actualDate = new Date().toJSON().slice(0,10)
-          var actualTime = new Date().toJSON().slice(11,16)
-          this.startDate = actualDate
-          this.startTime = actualTime 
+          this.resetNewTrainingTime()
+          this.updateExerciseTitles()
         },
         methods: {
+            async updateExerciseTitles() {
+              var dataFromServer = await getExerciseTitles()
+              this.exercisesTypes = []
+              dataFromServer.forEach(element => {
+                this.exercisesTypes.push(element.fields.title)
+              });
+            },
+            async acceptForm() {
+              var data = {
+                title : this.trainingTitle,
+                exercises : this.exercises,
+                start: this.startDate+' '+this.startTime
+              }
+              await postNewTraining(data)
+              this.resetForm()
+              this.closeForm()
+              this.$emit('updateEvents')
+            },
+            resetForm() {
+              this.trainingTitle = null
+              this.resetNewTrainingTime()
+              this.exercises = []
+            },
+            resetNewTrainingTime() {
+              var actualDate = new Date().toJSON().slice(0,10)
+              var actualTime = new Date().toJSON().slice(11,16)
+              this.startDate = actualDate
+              this.startTime = actualTime 
+            },
             closeForm() {
                 this.$emit('updateActiveForm', false)
             },
@@ -201,15 +244,15 @@
             },
             addNewExercise() {
               var newId
-              if(this.newTraining.length != 0){
-                newId  = this.newTraining[this.newTraining.length-1].id+1
+              if(this.exercises.length != 0){
+                newId  = this.exercises[this.exercises.length-1].id+1
               }
               else{
                 newId = 0
               }
-              this.newTraining.push({
+              this.exercises.push({
                 id: newId,
-                name: null,
+                title: null,
                 sets: [],
             })
             },
