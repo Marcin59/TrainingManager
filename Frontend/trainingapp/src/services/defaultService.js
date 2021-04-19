@@ -6,6 +6,18 @@ export async function getTrainingsByDate( startDate, endDate) {
     return dataFromServer
 }
 
+export async function getExercisesByTrainingPk( pk) {
+    var promise = await axios.get('http://127.0.0.1:8000/Trainings/ExercisesByTrainingPk/' + pk + '/')
+    var dataFromServer = JSON.parse(promise.data)
+    return dataFromServer
+}
+
+export async function getSetsByExercisePk( pk) {
+    var promise = await axios.get('http://127.0.0.1:8000/Trainings/SetsByExercisePk/' + pk + '/')
+    var dataFromServer = JSON.parse(promise.data)
+    return dataFromServer
+}
+
 export function postNewTraining(data) {
     axios({
         method: 'post',

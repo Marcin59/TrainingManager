@@ -107,7 +107,10 @@
               :color="selectedEvent.color"
               dark
             >
-              <v-btn icon>
+              <v-btn 
+                icon
+                @click="openUpdateTrainingForm"
+              >
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
@@ -139,6 +142,13 @@
         @updateActiveForm="updateAddNewTrainingFormActive"
         @updateEvents="updateEvents"
       />
+      <EditTrainingForm 
+        ref="updateTrainingForm"
+        :activeForm="updateTrainingFormActive" 
+        :selectedEvent="selectedEvent"
+        @updateActiveForm="updateUpdateTrainingFormActive"
+        @updateEvents="updateEvents"
+      />
     </v-col>
   </v-row>
 </template>
@@ -146,6 +156,7 @@
 <script>
 import {getTrainingsByDate} from "@/services/defaultService.js"
 import AddNewTrainingForm from "@/components/Forms/AddNewTrainingForm.vue"
+import EditTrainingForm from "@/components/Forms/EditTrainingForm.vue"
 
   export default {
     data: () => ({
@@ -157,20 +168,31 @@ import AddNewTrainingForm from "@/components/Forms/AddNewTrainingForm.vue"
         day: 'Day',
       },
       addNewTrainingFormActive: false,
+      updateTrainingFormActive: false,
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
       events: [],
+      calendarStart: null,
+      calendarEnd: null,
     }),
     components: {
         AddNewTrainingForm,
+        EditTrainingForm,
     },
     mounted () {
       this.$refs.calendar.checkChange()
     },
     methods: {
+      openUpdateTrainingForm() {
+        this.$refs.updateTrainingForm.updateEvent()
+        this.updateUpdateTrainingFormActive(true)
+      },
       updateAddNewTrainingFormActive(newValue) {
         this.addNewTrainingFormActive = newValue
+      },
+      updateUpdateTrainingFormActive(newValue) {
+        this.updateTrainingFormActive = newValue
       },
       viewDay ({ date }) {
         this.focus = date
@@ -206,13 +228,19 @@ import AddNewTrainingForm from "@/components/Forms/AddNewTrainingForm.vue"
 
         nativeEvent.stopPropagation()
       },
-      async updateEvents() {
-        await this.prev()
-        this.next()
+      updateEvents() {
+        this.updateRange()
       },
-      async updateRange ({ start, end }) {
+      async updateRange (data) {
+        if(typeof data !== 'undefined'){
+          var start = data.start
+          var end = data.end
+          this.calendarStart = start.date
+          this.calendarEnd = end.date
+        }
         this.events = []
-        var dataFromServer = await getTrainingsByDate(start.date, end.date)
+        var dataFromServer = await getTrainingsByDate(this.calendarStart, 
+                                                        this.calendarEnd)
         const events = []
         dataFromServer.forEach(element => {
             events.push({
@@ -221,6 +249,7 @@ import AddNewTrainingForm from "@/components/Forms/AddNewTrainingForm.vue"
                 end: element.fields.end.slice(0, 10) + ' ' + element.fields.end.slice(11, 19),
                 color: 'blue',
                 details: 12321,
+                pk: element.pk,
           })
         });
         this.events = events
