@@ -1,5 +1,13 @@
 import axios from 'axios';
 
+export function deleteTrainingByPk(data) {
+    axios({
+        method: 'delete',
+        url: 'http://127.0.0.1:8000/Trainings/',
+        data: data
+      });
+}
+
 export async function getTrainingsByDate( startDate, endDate) {
     var promise = await axios.get('http://127.0.0.1:8000/Trainings/' + startDate + '/' + endDate + '/')
     var dataFromServer = JSON.parse(promise.data)

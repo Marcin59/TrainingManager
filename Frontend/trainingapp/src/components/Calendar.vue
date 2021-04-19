@@ -133,6 +133,14 @@
               >
                 Cancel
               </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                text
+                color="secondary"
+                @click="deleteSelectedEvent"
+              >
+                Delete
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -154,7 +162,7 @@
 </template>
 
 <script>
-import {getTrainingsByDate} from "@/services/defaultService.js"
+import {getTrainingsByDate, deleteTrainingByPk} from "@/services/defaultService.js"
 import AddNewTrainingForm from "@/components/Forms/AddNewTrainingForm.vue"
 import EditTrainingForm from "@/components/Forms/EditTrainingForm.vue"
 
@@ -184,6 +192,14 @@ import EditTrainingForm from "@/components/Forms/EditTrainingForm.vue"
       this.$refs.calendar.checkChange()
     },
     methods: {
+      async deleteSelectedEvent() {
+        var data = {
+          pk: this.selectedEvent.pk
+        }
+        await deleteTrainingByPk(data)
+        this.updateEvents()
+        this.selectedOpen = false
+      },
       openUpdateTrainingForm() {
         this.$refs.updateTrainingForm.updateEvent()
         this.updateUpdateTrainingFormActive(true)

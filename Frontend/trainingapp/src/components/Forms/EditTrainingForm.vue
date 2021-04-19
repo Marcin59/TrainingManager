@@ -169,7 +169,7 @@
 
 <script>
 
-import {getExerciseTitles, postNewTraining, getExercisesByTrainingPk, getSetsByExercisePk} from "@/services/defaultService.js"
+import {getExerciseTitles, postNewTraining, getExercisesByTrainingPk, getSetsByExercisePk, deleteTrainingByPk} from "@/services/defaultService.js"
 
     export default {
         data: () => ({
@@ -190,7 +190,6 @@ import {getExerciseTitles, postNewTraining, getExercisesByTrainingPk, getSetsByE
             }
         },
         mounted() {
-          this.resetNewTrainingTime()
           this.updateExerciseTitles()
         },
         methods: {
@@ -226,26 +225,18 @@ import {getExerciseTitles, postNewTraining, getExercisesByTrainingPk, getSetsByE
               });
             },
             async acceptForm() {
+              var dataToDelete = {
+                pk: this.selectedEvent.pk
+              }
+              await deleteTrainingByPk(dataToDelete)
               var data = {
                 title : this.trainingTitle,
                 exercises : this.exercises,
                 start: this.startDate+' '+this.startTime
               }
               await postNewTraining(data)
-              this.resetForm()
               this.closeForm()
               this.$emit('updateEvents')
-            },
-            resetForm() {
-              this.trainingTitle = null
-              this.resetNewTrainingTime()
-              this.exercises = []
-            },
-            resetNewTrainingTime() {
-              var actualDate = new Date().toJSON().slice(0,10)
-              var actualTime = new Date().toJSON().slice(11,16)
-              this.startDate = actualDate
-              this.startTime = actualTime 
             },
             closeForm() {
                 this.$emit('updateActiveForm', false)
