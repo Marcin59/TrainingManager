@@ -162,7 +162,7 @@
 </template>
 
 <script>
-import {getTrainingsByDate, deleteTrainingByPk} from "@/services/defaultService.js"
+import {getTrainingsByDate, deleteTrainingByPk} from "@/services/trainingServise.js"
 import AddNewTrainingForm from "@/components/Forms/AddNewTrainingForm.vue"
 import EditTrainingForm from "@/components/Forms/EditTrainingForm.vue"
 

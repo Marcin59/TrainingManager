@@ -169,7 +169,7 @@
 
 <script>
 
-import {getExerciseTitles, postNewTraining, getExercisesByTrainingPk, getSetsByExercisePk, deleteTrainingByPk} from "@/services/defaultService.js"
+import {getExerciseTitles, postNewTraining, getExercisesByTrainingPk, getSetsByExercisePk, deleteTrainingByPk} from "@/services/trainingServise.js"
 
     export default {
         data: () => ({
