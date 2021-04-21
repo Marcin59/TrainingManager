@@ -43,7 +43,7 @@ export default {
     },
     methods: {
         updateCharts() {
-            this.$refs.areaChart.updateData()
+            window.location.reload()
         },
         updateAddNewStatisticFormActive(newValue) {
             this.addNewStatisticFormActive = newValue
