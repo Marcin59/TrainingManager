@@ -4,10 +4,11 @@ from django.http import JsonResponse
 from .models import Training, ExerciseTitle, Exercise, Set
 from django.core import serializers
 import datetime
-import re
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.http import HttpResponse
 import json
+import re
 
 # Create your views here.
 class TrainingsView(View):
@@ -32,6 +33,7 @@ class TrainingsView(View):
             for set in exercise['sets']:
                 newExercise.set_set.create(reps=set['reps'],
                                             weight=set['weight'])
+        return HttpResponse('success')
 
     def delete(self, request, *args, **kwargs):
         body = json.loads(request.body)

@@ -1,23 +1,53 @@
 <template>
     <v-app>
-        <AreaChart/>
-        <h1>{{dataFromServer}}</h1>
+      <v-sheet height="64">
+        <v-toolbar
+          flat
+        >
+          <v-spacer></v-spacer>
+          <v-btn
+            outlined
+            class="mr-4"
+            color="grey darken-2"
+            @click="updateAddNewStatisticFormActive(true)"
+          >
+            Add New Statistic
+          </v-btn>
+        </v-toolbar>
+      </v-sheet>
+      <AreaChart
+        ref="areaChart"
+      />
+      <AddNewStatisticForm
+        :activeForm="addNewStatisticFormActive"
+        @updateActiveForm="updateAddNewStatisticFormActive"
+        @updateCharts="updateCharts"
+      />
     </v-app>
 </template>
 
 <script>
-import AreaChart from "@/components/Charts/StatisticsAreaChart.vue";
+import AreaChart from "@/components/Charts/StatisticsAreaChart.vue"
+import AddNewStatisticForm from "@/components/Forms/AddNewStatisticForm.vue"
 
 export default {
     name: "Statistics",
     data: function () {
         return {
-            dataFromServer: null,
-            datasetsAreaChart: [],
+            addNewStatisticFormActive: false,
         }
     },
     components: {
         AreaChart,
-  },
+        AddNewStatisticForm,
+    },
+    methods: {
+        updateCharts() {
+            this.$refs.areaChart.updateData()
+        },
+        updateAddNewStatisticFormActive(newValue) {
+            this.addNewStatisticFormActive = newValue
+        }
+    },
 }
 </script>
