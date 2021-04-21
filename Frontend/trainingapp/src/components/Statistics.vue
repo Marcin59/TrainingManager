@@ -7,25 +7,17 @@
 
 <script>
 import AreaChart from "@/components/Charts/StatisticsAreaChart.vue";
-import {getStatistics} from "@/services/statisticServise.js"
 
 export default {
     name: "Statistics",
     data: function () {
         return {
             dataFromServer: null,
+            datasetsAreaChart: [],
         }
     },
     components: {
         AreaChart,
   },
-  mounted() {
-    this.updateData()
-  },
-  methods: {
-      async updateData() {
-          this.dataFromServer = await getStatistics()
-      },
-  }
 }
 </script>
