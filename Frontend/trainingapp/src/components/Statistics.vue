@@ -17,10 +17,16 @@
       </v-sheet>
       <AreaChart
         ref="areaChart"
+        @openEditStatisticForm="updateEditStatisticFormActive(true)"
       />
       <AddNewStatisticForm
         :activeForm="addNewStatisticFormActive"
         @updateActiveForm="updateAddNewStatisticFormActive"
+        @updateCharts="updateCharts"
+      />
+      <EditStatisticForm
+        :activeForm="editStatisticFormActive"
+        @updateActiveForm="updateEditStatisticFormActive"
         @updateCharts="updateCharts"
       />
     </v-app>
@@ -29,17 +35,20 @@
 <script>
 import AreaChart from "@/components/Charts/StatisticsAreaChart.vue"
 import AddNewStatisticForm from "@/components/Forms/AddNewStatisticForm.vue"
+import EditStatisticForm from "@/components/Forms/EditStatisticForm.vue"
 
 export default {
     name: "Statistics",
     data: function () {
         return {
             addNewStatisticFormActive: false,
+            editStatisticFormActive: false,
         }
     },
     components: {
         AreaChart,
         AddNewStatisticForm,
+        EditStatisticForm,
     },
     methods: {
         updateCharts() {
@@ -47,6 +56,9 @@ export default {
         },
         updateAddNewStatisticFormActive(newValue) {
             this.addNewStatisticFormActive = newValue
+        },
+        updateEditStatisticFormActive(newValue) {
+            this.editStatisticFormActive = newValue
         }
     },
 }

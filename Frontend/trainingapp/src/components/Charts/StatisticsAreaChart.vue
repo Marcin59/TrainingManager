@@ -1,39 +1,60 @@
+<template>
+  <v-container>
+    <apexchart type="area" height="350" ref="chart" :options="chartOptions" :series="chartData"></apexchart>
+  </v-container>
+</template>
+
 <script>
-import { Line } from "vue-chartjs";
 import {getStatistics} from "@/services/statisticServise.js"
-import moment from 'moment'
 
 export default {
-  extends: Line,
   data() {
     return {
-        chartData: {},
+        chartData: [],
+        chartOptions: {
+            chart: {
+              id: 'area-datetime',
+              type: 'area',
+              height: 350,
+              zoom: {
+                autoScaleYaxis: true
+              },
+              events: {
+                dataPointSelection: this.dataPointSelection
+              }
+            },
+            dataLabels: {
+              enabled: false
+            },
+            markers: {
+              size: 10,
+              style: 'hollow',
+            },
+            xaxis: {
+              type: 'datetime',
+              tickAmount: 6,
+            },
+            tooltip: {
+              x: {
+                format: 'dd MMM yyyy'
+              },
+              intersect: true,
+              shared: false,
+            },
+            fill: {
+              type: 'gradient',
+              gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.7,
+                opacityTo: 0.9,
+                stops: [0, 100]
+              }
+            },
+        }
     };
   },
   async mounted() {
     await this.updateData()
-    this.renderChart(
-      this.chartData,
-      { responsive: true, 
-      maintainAspectRatio: false,
-      scales: {
-        xAxes: [{
-            type: 'time',
-            time: { parser: 'YYYY/MM/DD HH:mm:ss' },
-            scaleLabel: {
-                        display:     true,
-                        labelString: 'Date'
-                },
-            ticks: {
-                    // Include a dollar sign in the ticks
-                    callback: function(values) {
-                        return values;
-                    }
-                }
-          }],
-        }
-      }
-    );
   },
     methods: {
       async updateData() {
@@ -41,14 +62,21 @@ export default {
           this.dataFromServer = await getStatistics()
           for (var key in this.dataFromServer) {
             var newDataset = {}
-            newDataset['label'] = key
+            newDataset['name'] = key
             newDataset['data'] = []
             this.dataFromServer[key].forEach(element => {
-                newDataset['data'].push({x: moment.utc(element.date).format('YYYY/MM/DD HH:mm:ss'), y: element.weight})
+                newDataset['data'].push({x:element.date, y:element.weight, additionalValues: 'Dupa'})
             });
             datasets.push(newDataset)
             }
-          this.chartData['datasets'] = datasets
+          this.chartData = datasets
+      },
+      dataPointSelection(event, chartContext, config) {
+        console.log(event)
+        console.log(chartContext)
+        console.log(config)
+        console.log(this.$refs.chart.series[config.seriesIndex].data[config.dataPointIndex])
+        this.$emit('openEditStatisticForm')
       },
   }
 };

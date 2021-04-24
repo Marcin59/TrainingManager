@@ -39,7 +39,7 @@ class TrainingsView(View):
         body = json.loads(request.body)
         training = self.instance.objects.get(pk=body['pk'])
         training.delete()
-
+        return HttpResponse('success')
 
 class TrainingsViewByDateRange(View):
 
