@@ -26,6 +26,7 @@ class StatisticsView(View):
                 new_data = {}
                 new_data['weight'] = data.weight
                 new_data['date'] = data.date
+                new_data['pk'] = data.pk
                 statistics[title.title].append(new_data)
             statistics[title.title].sort(key=lambda x: x['date'])
         response_data = json.dumps(statistics, cls=DjangoJSONEncoder,)
@@ -33,6 +34,12 @@ class StatisticsView(View):
             response_data,
             safe=False,
         )
+
+    def delete(self, request, *args, **kwargs):
+        body = json.loads(request.body)
+        statistic = self.instance.objects.get(pk=body['pk'])
+        statistic.delete()
+        return HttpResponse('success')
 
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)

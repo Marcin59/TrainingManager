@@ -31,21 +31,37 @@
       </v-container>
 
         <v-card-actions>
-          <v-btn
-            color="primary"
-            text
-            @click="closeForm"
-          >
-            Cancel
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            text
-            @click="acceptForm"
-          >
-            Accept
-          </v-btn>
+          <v-row>
+            <v-col>
+              <v-btn
+                color="primary"
+                text
+                @click="closeForm"
+              >
+                Cancel
+              </v-btn>
+            </v-col>
+
+            <v-col>
+              <v-btn
+                color="primary"
+                text
+                @click="deleteForm"
+              >
+                Delete
+              </v-btn>
+            </v-col>
+
+            <v-col>
+              <v-btn
+                color="primary"
+                text
+                @click="updateForm"
+              >
+                Accept
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -53,21 +69,22 @@
 </template>
 
 <script>
-import {getStatisticTitles, postNewStatistic} from "@/services/statisticServise.js"
+import {getStatisticTitles, postNewStatistic, deleteStatisticByPk} from "@/services/statisticServise.js"
 
 export default {
     data: () => ({
-        statisticWeight: [],
+        statisticWeight: null,
         statisticDate: null,
         statisticTitle: null,
+        statisticPk: null,
         statisticTypes: [],
     }),
     props: {
-            activeForm: Boolean,
+        activeForm: Boolean,
     },
     mounted() {
-          this.updateStatisticTitles()
-        },
+        this.updateStatisticTitles()
+      },
     computed: {
         active: {
             get () { return this.activeForm },
@@ -82,25 +99,37 @@ export default {
                 this.statisticTypes.push(element.fields.title)
               });
         },
-        async acceptForm() {
-            var data = {
+        async updateForm() {
+            var dataToDelete = {
+              pk: this.statisticPk
+            }
+            await deleteStatisticByPk(dataToDelete)
+            var dataToPost = {
                 title: this.statisticTitle,
                 date: this.statisticDate,
                 weight: this.statisticWeight,
-            }
-            await postNewStatistic(data)
+              }
+            await postNewStatistic(dataToPost)
             this.closeForm()
-            this.resetForm()
             this.$emit('updateCharts')
         },
-        resetForm() {
-            this.statisticWeight= []
-            this.statisticDate = null
-            this.statisticTitle = null
+        async deleteForm() {
+          var data = {
+            pk: this.statisticPk,
+          }
+          await deleteStatisticByPk(data)
+          this.closeForm()
+          this.$emit('updateCharts')
+        },
+        updateFormValues(title, date, weight, pk) {
+            this.statisticWeight = weight
+            this.statisticDate = date.slice(0, 10)
+            this.statisticTitle = title
+            this.statisticPk = pk
         },
         closeForm() {
             this.$emit('updateActiveForm', false)
-        }
+        },
     }
 }
 </script>

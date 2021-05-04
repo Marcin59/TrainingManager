@@ -65,17 +65,15 @@ export default {
             newDataset['name'] = key
             newDataset['data'] = []
             this.dataFromServer[key].forEach(element => {
-                newDataset['data'].push({x:element.date, y:element.weight, additionalValues: 'Dupa'})
+                newDataset['data'].push({x:element.date, y:element.weight, pk: element.pk, title:key})
             });
             datasets.push(newDataset)
             }
           this.chartData = datasets
       },
       dataPointSelection(event, chartContext, config) {
-        console.log(event)
-        console.log(chartContext)
-        console.log(config)
-        console.log(this.$refs.chart.series[config.seriesIndex].data[config.dataPointIndex])
+        var selectedEvent = this.$refs.chart.series[config.seriesIndex].data[config.dataPointIndex]
+        this.$emit('updateEditFormValues', selectedEvent.title,  selectedEvent.x, selectedEvent.y, selectedEvent.pk)
         this.$emit('openEditStatisticForm')
       },
   }

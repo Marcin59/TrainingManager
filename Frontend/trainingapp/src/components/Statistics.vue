@@ -18,6 +18,7 @@
       <AreaChart
         ref="areaChart"
         @openEditStatisticForm="updateEditStatisticFormActive(true)"
+        @updateEditFormValues="updateEditFormValues"
       />
       <AddNewStatisticForm
         :activeForm="addNewStatisticFormActive"
@@ -25,7 +26,9 @@
         @updateCharts="updateCharts"
       />
       <EditStatisticForm
+        ref="editForm"
         :activeForm="editStatisticFormActive"
+        :selectedStatisticPk="selectedStatisticPk"
         @updateActiveForm="updateEditStatisticFormActive"
         @updateCharts="updateCharts"
       />
@@ -43,6 +46,7 @@ export default {
         return {
             addNewStatisticFormActive: false,
             editStatisticFormActive: false,
+            selectedStatisticPk: 'null',
         }
     },
     components: {
@@ -59,6 +63,9 @@ export default {
         },
         updateEditStatisticFormActive(newValue) {
             this.editStatisticFormActive = newValue
+        },
+        updateEditFormValues(title, date, weight, pk) {
+          this.$refs.editForm.updateFormValues(title, date, weight, pk)
         }
     },
 }

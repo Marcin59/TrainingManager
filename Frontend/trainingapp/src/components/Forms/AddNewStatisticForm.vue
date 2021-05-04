@@ -57,7 +57,7 @@ import {getStatisticTitles, postNewStatistic} from "@/services/statisticServise.
 
 export default {
     data: () => ({
-        statisticWeight: [],
+        statisticWeight: null,
         statisticDate: null,
         statisticTitle: null,
         statisticTypes: [],
